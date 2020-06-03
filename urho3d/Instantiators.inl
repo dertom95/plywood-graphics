@@ -32,26 +32,30 @@ ExternResult extern_urho3d_prebuilt(ExternCommand cmd, ExternProviderArgs* args)
     // Toolchain filters
 
     StringView version = "1.8-ALPHA.94";
-    StringView platform = "Linux";
+    StringView platform = "";
     StringView ext = ".tar.gz";
+    StringView staticLibExt = ".a";
+    StringView libPrefix = "lib";
 
     String plyPlatform = args->toolchain->targetPlatform.name;
     if (plyPlatform == "windows"){
-        platform = "Windows";
+        platform = "Windows-64bit-STATIC-3D11";
         ext =".zip";
+        staticLibExt=".lib";
+        libPrefix="";
     }
     else if (plyPlatform == "macos"){
-        platform = "macOS";
+        platform = "macOS-64bit-STATIC";
     }
-    else if (plyPlatform != "linux"){
+    else if (plyPlatform == "linux"){
+        platform = "Linux-64bit-STATIC";
+    }
+    else {
         return {ExternResult::UnsupportedToolchain, String::format("Unsupported Platform:{}",plyPlatform)};
     }
-
-    String filenameWithoutExt = String::format("Urho3D-{}-{}-64bit-STATIC-snapshot",version,platform);
+    String filenameWithoutExt = String::format("Urho3D-{}-{}-snapshot",version,platform);
     String filename = String::format("{}{}",filenameWithoutExt,ext);
     String url = String::format("https://sourceforge.net/projects/urho3d/files/Urho3D/Snapshots/{}/download",filename);
-//    String url = String::format("http://localhost/web/{}",filename);
-
 
     // Handle Command
     Tuple<ExternResult, ExternFolder*> er = args->findExistingExternFolder(plyPlatform);
@@ -86,7 +90,7 @@ ExternResult extern_urho3d_prebuilt(ExternCommand cmd, ExternProviderArgs* args)
         args->dep->includeDirs.append(NativePath::join(installFolder, "include/Urho3D/ThirdParty"));
         args->dep->libs.append("dl");
         args->dep->libs.append("GL");
-        args->dep->libs.append(NativePath::join(installFolder, "lib/Urho3D/libUrho3D.a"));
+        args->dep->libs.append(NativePath::join(installFolder, String::format("lib/Urho3D/{}Urho3D{}",libPrefix,staticLibExt) ));
         return {ExternResult::Instantiated, ""};
     }
     PLY_ASSERT(0);
