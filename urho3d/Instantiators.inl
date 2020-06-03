@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-// ply instantiate Test
-void inst_Test(TargetInstantiatorArgs* args) {
+// ply instantiate Urho3DTestScene
+void inst_Urho3DTestScene(TargetInstantiatorArgs* args) {
     args->buildTarget->targetType = BuildTargetType::EXE;
     args->addSourceFiles("src/test", false);
     args->addExtern(Visibility::Public, "liburho3d");
@@ -27,7 +27,7 @@ void inst_Test(TargetInstantiatorArgs* args) {
 
 
 
-// ply extern urho3d.liburho3d.prebuilt
+// ply extern plywood-graphics.liburho3d.prebuilt
 ExternResult extern_urho3d_prebuilt(ExternCommand cmd, ExternProviderArgs* args) {
     // Toolchain filters
 
